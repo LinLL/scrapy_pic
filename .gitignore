@@ -1,0 +1,7 @@
+.DS_Store
+*.py[cod]
+.idea
+__pycache__
+*.jl
+*.eot
+*.jpg
