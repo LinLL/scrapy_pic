@@ -20,3 +20,5 @@ def create_app(config="app.config"):
         app.register_blueprint(fanfan)
 
         return app
+
+

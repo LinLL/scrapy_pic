@@ -2,8 +2,10 @@ __author__ = 'js'
 
 # -*- coding: utf-8 -*-
 import scrapy
-import os.path
-from items import TrainItem
+import logging
+from items import TrainItem,BeautyItems
+from pipelines import TrainPipeline
+from app.model import Beautys
 
 
 class DomzSpider(scrapy.Spider):
@@ -19,7 +21,11 @@ class DomzSpider(scrapy.Spider):
     def parse(self, response):
 
         cPage = response.xpath("//span[@class='current-comment-page']/text()").extract()[0][1:-1]
-        for p in range(0,int(cPage)):
+
+        pipe = TrainPipeline()
+        for p in range(1,int(cPage)+1):
+            if pipe.db.query(Beautys).filter(Beautys.page==p).first():
+                continue
             url = "http://jandan.net/ooxx/page-{}#comments".format(p)
             yield scrapy.Request(url=url, callback=self.parseBeauty, meta={"page":p})
 
@@ -27,8 +33,12 @@ class DomzSpider(scrapy.Spider):
     def parseBeauty(self,response):
 
         bPictures = response.xpath("//a[@class='view_img_link']/@href").extract()
-        for url in bPictures:
+        items = BeautyItems()
+        for num,url in enumerate(bPictures):
             item = TrainItem()
             item['image_urls'] = url
-            yield item
+            item['page'] = response.meta["page"]
+            items.beautys.append(item)
+
+        return items
 
