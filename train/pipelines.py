@@ -26,6 +26,7 @@ class TrainPipeline(object):
 
             try:
                 self.db.commit()
+                return item
             except IntegrityError as e:
                 self.db.rollback()
 

@@ -8,12 +8,19 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+import time
+from utils.proxycheck import run
+
 
 BOT_NAME = 'train.spiders'
 SPIDER_MODULES = ['train.spiders']
 NEWSPIDER_MODULE = 'train.spiders'
 COOKIES_ENABLED = False
-
+DOWNLOAD_TIMEOUT = 30
 ITEM_PIPELINES = {
     'train.pipelines.TrainPipeline': 300,
 }
@@ -30,72 +37,96 @@ DOWNLOADER_MIDDLEWARES = {
 
 #ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
 #IMAGES_STORE = './beauty'
-LOG_LEVEL = 'INFO'
-#LOG_LEVEL = 'DEBUG'
+#LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 #DOWNLOAD_DELAY = 0.1
 RETRY_TIMES = 5
 
-HTTP_PROXY = ["http://120.52.73.97:8091",
-"http://59.33.46.156:6969",
-"http://124.88.67.20:80",
-"http://121.12.149.18:2226",
-"http://183.239.167.122:8080",
-"http://124.88.67.24:843",
-"http://123.56.74.13:8080",
-"http://182.254.218.141:80",
-"http://118.187.10.11:80",
-"http://124.240.187.84:80",
-"http://124.240.187.78:83",
-"http://119.6.136.122:80",
-"http://202.201.125.51:8080",
-"http://185.115.127.208:80",
-"http://39.88.108.35:81",
-"http://113.69.67.230:81",
-"http://183.196.9.132:2226",
-"http://106.39.20.106:81",
-"http://124.240.187.80:81",
-"http://183.239.173.138:8080",
-"http://203.210.6.39:80",
-"http://124.88.67.17:80",
-"http://60.21.209.114:8080",
-"http://188.166.245.248:80",
-"http://180.142.128.118:2226",
-"http://108.59.10.129:55555",
-"http://122.0.74.166:3389",
-"http://221.10.126.191:2226",
-"http://222.170.17.74:2226",
-"http://112.64.142.254:81",
-"http://183.196.9.132:2226",
-"http://112.83.75.1:81",
-"http://117.103.173.98:8080",
-"http://222.170.17.74:2226",
-"http://108.59.10.129:55555",
-"http://182.93.233.254:8080",
-"http://122.0.74.166:3389",
-"http://119.6.136.122:80",
-"http://183.239.173.138:8080",
-"http://203.210.6.39:80",
-"http://124.240.187.84:80",
-"http://178.32.153.219:80",
-"http://124.240.187.78:83",
-"http://123.56.74.13:8080",
-"http://120.52.73.97:8091",
-"http://119.187.243.38:8888",
-"http://59.33.46.156:6969",
-"http://177.207.234.14:80",
-"http://60.21.209.114:8080",
-"http://52.196.44.159:8080",
-"http://39.88.108.35:81",
-"http://124.240.187.80:81",
-"http://118.187.10.11:80",
-"http://120.236.148.199:2226",
-"http://106.39.20.106:81",
-"http://41.185.91.157:80",
-"http://82.198.197.62:80",
-"http://185.115.127.208:80",
-"http://80.80.160.251:8080",
-"http://80.80.160.252:8080"
-]
+
+
+try:
+    with open("proxy",'rb') as proxy_s:
+        proxys_obj = pickle.load(proxy_s)
+        create_time = proxys_obj['time']
+        time_now = time.time()
+
+        if time_now-create_time>3600*24:
+            with open("proxy",'wb') as proxy_s:
+                    HTTP_PROXY  = run()
+                    obj = {'time':time_now,'proxy':HTTP_PROXY}
+                    pickle.dump(obj)
+        else:
+            HTTP_PROXY = proxys_obj['proxy']
+
+except FileNotFoundError as e:
+    with open("proxy",'wb') as proxy_s:
+        HTTP_PROXY  = run()
+        time_now = time.time()
+        obj = {'time':time_now,'proxy':HTTP_PROXY}
+        pickle.dump(obj, proxy_s)
+    pass
+
+# HTTP_PROXY = ["http://120.52.73.97:8091",
+# "http://59.33.46.156:6969",
+# "http://124.88.67.20:80",
+# "http://121.12.149.18:2226",
+# "http://183.239.167.122:8080",
+# "http://124.88.67.24:843",
+# "http://123.56.74.13:8080",
+# "http://182.254.218.141:80",
+# "http://118.187.10.11:80",
+# "http://124.240.187.84:80",
+# "http://124.240.187.78:83",
+# "http://119.6.136.122:80",
+# "http://202.201.125.51:8080",
+# "http://185.115.127.208:80",
+# "http://39.88.108.35:81",
+# "http://113.69.67.230:81",
+# "http://183.196.9.132:2226",
+# "http://106.39.20.106:81",
+# "http://124.240.187.80:81",
+# "http://183.239.173.138:8080",
+# "http://203.210.6.39:80",
+# "http://124.88.67.17:80",
+# "http://60.21.209.114:8080",
+# "http://188.166.245.248:80",
+# "http://180.142.128.118:2226",
+# "http://108.59.10.129:55555",
+# "http://122.0.74.166:3389",
+# "http://221.10.126.191:2226",
+# "http://222.170.17.74:2226",
+# "http://112.64.142.254:81",
+# "http://183.196.9.132:2226",
+# "http://112.83.75.1:81",
+# "http://117.103.173.98:8080",
+# "http://222.170.17.74:2226",
+# "http://108.59.10.129:55555",
+# "http://182.93.233.254:8080",
+# "http://122.0.74.166:3389",
+# "http://119.6.136.122:80",
+# "http://183.239.173.138:8080",
+# "http://203.210.6.39:80",
+# "http://124.240.187.84:80",
+# "http://178.32.153.219:80",
+# "http://124.240.187.78:83",
+# "http://123.56.74.13:8080",
+# "http://120.52.73.97:8091",
+# "http://119.187.243.38:8888",
+# "http://59.33.46.156:6969",
+# "http://177.207.234.14:80",
+# "http://60.21.209.114:8080",
+# "http://52.196.44.159:8080",
+# "http://39.88.108.35:81",
+# "http://124.240.187.80:81",
+# "http://118.187.10.11:80",
+# "http://120.236.148.199:2226",
+# "http://106.39.20.106:81",
+# "http://41.185.91.157:80",
+# "http://82.198.197.62:80",
+# "http://185.115.127.208:80",
+# "http://80.80.160.251:8080",
+# "http://80.80.160.252:8080"
+# ]
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENTS = [

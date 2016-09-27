@@ -33,7 +33,6 @@ class ErrorRetry(object):
 
     def process_response(self,request, response, spider):
         if  response.status == 400 or response.status==503:  # common case
-            logger.debug(response.body)
             request.cookies=[]
             return request
         else:
