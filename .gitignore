@@ -5,3 +5,5 @@ __pycache__
 *.jl
 *.eot
 *.jpg
+train/.secret_key
+train/app/fanfan_R.db
