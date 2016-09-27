@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from utils import conn
 from sqlalchemy.exc import IntegrityError
 from app.model import Beautys
 import json
@@ -11,9 +10,8 @@ import json
 class TrainPipeline(object):
 
     def __init__(self):
-        engine = create_engine("sqlite:///app/fanfan.db")
-        Session  = sessionmaker(bind=engine)
-        self.db = Session()
+
+        self.db = conn()
         pass
 
 

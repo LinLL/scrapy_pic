@@ -3,6 +3,7 @@ import json
 import tempfile
 from qiniu import put_stream,Auth,put_file
 from multiprocessing import Pool
+from utils import conn
 
 access_key = 'zb_bs-lr17r7P3zdUVDLFl0Iyk0olJEOKpBX9zRD'
 secret_key = 'GhiUZq-N1lFoPXnxgGySz26jwoKPM69JwYyDnMT7'
@@ -13,7 +14,9 @@ bucket_name = 'fanba'
 
 def upload(path):
 
+
     with open(path,'r') as beauties:
+    
         babys = json.load(beauties)
         pool = Pool(8)
         pool.map(upqiniu,babys)
@@ -22,7 +25,8 @@ def upload(path):
 
 
 def upqiniu(baby):
-    url = baby["image_urls"]
+
+    url = "http://ww3.sinaimg.cn/large/{}".format(baby["url"])
     upname = url.split("/")[-1]
     if "gif" in upname:
         return
