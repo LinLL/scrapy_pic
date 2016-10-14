@@ -14,6 +14,4 @@ class TrainItem(scrapy.Item):
     image_urls = scrapy.Field()
     page = scrapy.Field()
 
-class BeautyItems(scrapy.Item):
 
-    beautys = []

@@ -31,9 +31,9 @@ class ErrorRetry(object):
     def __init__(self,crawler):
         pass
 
-    def process_response(self,request, response, spider):
-        if  response.status == 400 or response.status==503:  # common case
-            request.cookies=[]
+    def process_response(self, request, response, spider):
+        if response.status == 400 or response.status == 503:  # common case
+            request.cookies = []
             return request
         else:
             return response
@@ -51,7 +51,7 @@ class ProxyMiddleware(object):
     def from_crawler(cls, crawler):
         return cls(crawler.settings.getlist('HTTP_PROXY'))
 
-    def __init__(self,proxys):
+    def __init__(self, proxys):
         self.proxy = proxys
 
     def process_request(self, request, spider):

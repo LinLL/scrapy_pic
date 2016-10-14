@@ -14,4 +14,5 @@ DEBUG = True
 HOST = "127.0.0.1"
 SECRET_KEY =  key
 
-SQLALCHEMY_DATABASE_URI = "sqlite:///fanfan.db"
+#SQLALCHEMY_DATABASE_URI = "sqlite:///fanfan.db"
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:iix3ooM5eelieshoovuveiquohmaiLoh@120.27.112.232:13306/fanfan8"

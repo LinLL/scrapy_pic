@@ -2,7 +2,8 @@
 from utils import conn
 from sqlalchemy.exc import IntegrityError
 from app.model import Beautys
-import json
+from yunupload.upload import upqiniu
+
 
 
 
@@ -15,18 +16,19 @@ class TrainPipeline(object):
         pass
 
 
-    def process_item(self, item, spider):
+    def process_item(self,item,spider):
 
-        for beauty in  item.beautys:
+        beauty = item
+        baby = Beautys(url=beauty["image_urls"].split("/")[-1], page=beauty["page"])
+        self.db.add(baby)
 
-            baby = Beautys(url=beauty["image_urls"].split("/")[-1], page=beauty["page"])
-            self.db.add(baby)
-
-            try:
-                self.db.commit()
-                return item
-            except IntegrityError as e:
-                self.db.rollback()
+        try:
+            self.db.commit()
+            upqiniu(baby.url)
+            return item
+        except IntegrityError as e:
+            self.db.rollback()
+            return item
 
 
 

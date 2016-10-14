@@ -37,8 +37,8 @@ DOWNLOADER_MIDDLEWARES = {
 
 #ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
 #IMAGES_STORE = './beauty'
-#LOG_LEVEL = 'INFO'
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
+#LOG_LEVEL = 'DEBUG'
 #DOWNLOAD_DELAY = 0.1
 RETRY_TIMES = 5
 
