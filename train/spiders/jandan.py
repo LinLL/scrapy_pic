@@ -31,11 +31,11 @@ class DomzSpider(scrapy.Spider):
         bPictures = response.xpath("//a[@class='view_img_link']/@href").extract()
         page_num = self.pipe.db.query(Beautys).filter(Beautys.page==response.meta["page"]).count()
         if page_num<len(bPictures):
-            self.logger.info(str(len(bPictures))+":"+str(page_num))
+            page_list = self.pipe.db.query(Beautys.url).filter(Beautys.page==response.meta["page"]).all()
             for name in bPictures:
-                item = TrainItem()
-                item['image_urls'] = name
-                self.logger.info(name)
-                item['page'] = response.meta["page"]
-                yield item
+                if (name.split("/")[-1],) not in page_list:
+                    item = TrainItem()
+                    item['image_urls'] = name
+                    item['page'] = response.meta["page"]
+                    yield item
 

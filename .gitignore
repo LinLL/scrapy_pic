@@ -7,3 +7,5 @@ __pycache__
 *.jpg
 train/.secret_key
 train/app/fanfan_R.db
+train/proxy
+train/app/config.py
